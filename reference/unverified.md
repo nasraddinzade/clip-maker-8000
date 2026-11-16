@@ -34,7 +34,7 @@
 - **anthropics/skills:**
   - LICENSE.txt у algorithmic-art, canvas-design, skill-creator, slack-gif-creator не открывали, лицензия указана по README («вероятно Apache-2.0»);
   - brand-guidelines, theme-factory, template, spec не читали.
-- **impeccable:** из 45 справочных файлов прочитаны 4.
+- **impeccable:** прочитаны craft-floor, foundations, critique-rubric, harden, animate, заголовки polish, typeset, layout (для web-motion-kit-8000). Остальные справочники и живой режим не читали.
 - **remotion-dev/skills:** файл лицензии не найден; под-справочники по детерминизму и шрифтам не читали.
 - **Синтаксис `hooks` во frontmatter навыка** сверить с code.claude.com/docs/en/hooks перед использованием.
 - **Three.js manual** недоступен (404), условия Shadertoy недоступны (403), лицензию Blender не проверяли.

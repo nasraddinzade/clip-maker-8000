@@ -78,6 +78,7 @@
 | 50 | github.com/remotion-dev/skills | официальные навыки Remotion | лицензия Remotion | ставить через create-video, Studio открыт для человека, рендер по просьбе | — | Ю |
 | 51 | github.com/browser-use/video-use | монтаж по разговору | MIT | рез по границам слов, запас 30–200 мс, три круга самопроверки | — | — |
 | 52 | github.com/farhan-syah/motion-video-skill, YahyaLendani/motionbrief-claude-skills, bangtutorial/bang-motion | моушн из HTML и брифа | MIT | содержимое несёт движение, камера только с причиной; проверка, что текст из брифа виден и держится | — | — |
+| 53 | github.com/emilkowalski/skills (emil-design-eng, animate, choreograph) | навыки дизайн-инженера Эмиля Ковальского | MIT | сильные кривые, физика появления и нажатия, хореография группы с ролями, неровная лесенка (`motion-craft.md`, раздел 11) | навыки целиком, Swift, Expo |
 
 ## Прочитано, но вне 40 (кратко, чтобы не потерялось)
 
