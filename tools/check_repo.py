@@ -27,6 +27,9 @@ except Exception:
 ROOT = pathlib.Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else pathlib.Path(__file__).resolve().parent.parent
 errors = []
 
+# Переименования. Пополняй вместе с таблицей в CONTRIBUTING.md, раздел 6.
+RENAMED = {"video-reel-craft": "video-ad-craft"}
+
 
 def err(path, line, text):
     rel = path.relative_to(ROOT) if path.is_relative_to(ROOT) else path
@@ -107,6 +110,16 @@ for p in files(".md", ".py"):
         nums = re.findall(r"^# (\d+)\.", text, re.M)
         for n in sorted({n for n in nums if nums.count(n) > 1}):
             err(p, 0, f"два раздела с номером «# {n}.», новые разделы нумеруй датой, не номером")
+    # 6. старые имена переименованных навыков и файлов (список в CONTRIBUTING.md, раздел 6)
+    if p.name not in ("CONTRIBUTING.md", "check_repo.py"):
+        for i, line in enumerate(text.splitlines(), 1):
+            for old, new in RENAMED.items():
+                if old in line:
+                    err(p, i, f"старое имя «{old}», теперь «{new}»")
+
+for old, new in RENAMED.items():
+    if (ROOT / ".claude" / "skills" / old).exists():
+        err(ROOT / ".claude" / "skills" / old, 0, f"папка со старым именем навыка, перенеси в «{new}»")
 
 if errors:
     print("ОШИБКИ репозитория:")
@@ -114,4 +127,4 @@ if errors:
         print("  " + e)
     print(f"Итого {len(errors)}.")
     sys.exit(1)
-print("Репозиторий согласован: навыки, скрипты, ссылки, номера, маркеры слияния, ключи.")
+print("Репозиторий согласован: навыки, скрипты, ссылки, номера, маркеры слияния, ключи, старые имена.")
