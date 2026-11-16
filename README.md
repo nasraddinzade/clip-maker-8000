@@ -44,6 +44,7 @@
 | `reference/hooks.md` | хуки и анти-хуки по типам |
 | `reference/reel-references.md` | разбор 12 рекламных роликов, числа красоты |
 | `reference/devices.md` | десктоп, планшет и телефон в одном ролике |
+| `reference/motion-craft.md` | ремесло из чужих навыков: тайминг по прочтениям, ритм и связка, камера, носитель, цикл правки, p5.brush, голос |
 | `reference/platforms.md` | требования площадок и безопасные зоны |
 | `reference/tech_matrix.md` | какой стек под какой тип идеи |
 | `reference/lessons.md` | уроки проектов |
