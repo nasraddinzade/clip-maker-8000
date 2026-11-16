@@ -1,0 +1,12 @@
+# Тяжёлое и временное не храним в репозитории
+*.mp4
+*.mov
+*.wav
+*.mp3
+*.m4a
+node_modules/
+.venv*/
+__pycache__/
+out/
+frames/
+.tts-models/
