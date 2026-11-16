@@ -10,3 +10,8 @@ __pycache__/
 out/
 frames/
 .tts-models/
+
+# проекты роликов и данные клиентов
+projects/
+brief.md
+facts.md
