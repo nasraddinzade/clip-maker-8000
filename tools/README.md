@@ -11,6 +11,7 @@
 | `caption_margins.py` | поля подписей и зоны интерфейса | `python caption_margins.py boxes.json --safe 80 --ui reels` |
 | `flash_detector.py` | немонотонные растворения («вспышки») | `python flash_detector.py --frames DIR --box "kanji:250,600,830,1200" --range 2025:2094` |
 | `audio_check.py` | громкость и пики, длины дорожек, стыки | `python audio_check.py loud out.mp4` · `lengths out.mp4` · `joints mix.wav --voice voice.wav --at 11.2,25.5` |
+| `check_repo.py` | сам репозиторий правил, а не ролик: навыки и скрипты без записи в индексе, битые ссылки, маркеры слияния, повторные номера разделов, похожие на ключи строки | `python check_repo.py` |
 
 Почти все скрипты при ошибке возвращают код 1, их можно ставить в конвейер. Исключения:
 - `motion.py` только печатает отчёт;
