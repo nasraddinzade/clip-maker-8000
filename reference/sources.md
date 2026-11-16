@@ -79,6 +79,7 @@
 | 51 | github.com/browser-use/video-use | монтаж по разговору | MIT | рез по границам слов, запас 30–200 мс, три круга самопроверки | — | — |
 | 52 | github.com/farhan-syah/motion-video-skill, YahyaLendani/motionbrief-claude-skills, bangtutorial/bang-motion | моушн из HTML и брифа | MIT | содержимое несёт движение, камера только с причиной; проверка, что текст из брифа виден и держится | — | — |
 | 53 | github.com/emilkowalski/skills (emil-design-eng, animate, choreograph) | навыки дизайн-инженера Эмиля Ковальского | MIT | сильные кривые, физика появления и нажатия, хореография группы с ролями, неровная лесенка (`motion-craft.md`, раздел 11) | навыки целиком, Swift, Expo |
+| 54 | обзоры трендов 2026 (Advids, GraphicDesignJunction, AutoAE, Centric, Videobolt, Renderforest), прочитано 17.11.2026 | что сейчас в моде и что устарело, в `reference/trends.md` | списки без замеров как правила | — | — |
 
 ## Прочитано, но вне 40 (кратко, чтобы не потерялось)
 

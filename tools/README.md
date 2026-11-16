@@ -12,6 +12,7 @@
 | `flash_detector.py` | немонотонные растворения («вспышки») | `python flash_detector.py --frames DIR --box "kanji:250,600,830,1200" --range 2025:2094` |
 | `ref_analyze.py` | разбор референсных роликов: длина, склейки, движение, громкость, лист кадров | `python ref_analyze.py ПАПКА --out ref_report` · `--selftest` |
 | `audio_check.py` | громкость и пики, длины дорожек, стыки | `python audio_check.py loud out.mp4` · `lengths out.mp4` · `joints mix.wav --voice voice.wav --at 11.2,25.5` |
+| `trends_fresh.py` | не просрочены ли сведения о моде в `reference/trends.md` | `python trends_fresh.py`, `--selftest` |
 | `check_repo.py` | сам репозиторий правил, а не ролик: навыки и скрипты без записи в индексе, битые ссылки, старые имена переименованных навыков, маркеры слияния, повторные номера разделов, похожие на ключи строки | `python check_repo.py` |
 
 Почти все скрипты при ошибке возвращают код 1, их можно ставить в конвейер. Исключения:
