@@ -8,6 +8,7 @@
 | `crops3x3.py` | кропы 3×3 в 100 % (мусор, края размывок, обрезанный текст) | `python crops3x3.py --video out.mp4 --at 12,40 --out check/crops` |
 | `compare_sheet.py` | лист «было / стало» по версиям | `python compare_sheet.py --videos v1.mp4 v2.mp4 --at 2,10,25 --out cmp.png` |
 | `motion.py` | участки, где картинка стоит (с оговорками) | `python motion.py --video out.mp4` или `--frames DIR --baseline DIR_FROZEN` |
+| `accent_area.py` | доля площади кадра, занятая акцентным цветом, против бюджета из манифеста стиля | `python accent_area.py кадры/ --hex C9A24B --max 6` · `--selftest` |
 | `caption_margins.py` | поля подписей и зоны интерфейса | `python caption_margins.py boxes.json --safe 80 --ui reels --elements elements.json` |
 | `flash_detector.py` | немонотонные растворения («вспышки») | `python flash_detector.py --frames DIR --box "kanji:250,600,830,1200" --range 2025:2094` |
 | `ref_analyze.py` | разбор референсных роликов: длина, склейки, движение, громкость, лист кадров | `python ref_analyze.py ПАПКА --out ref_report` · `--selftest` |
