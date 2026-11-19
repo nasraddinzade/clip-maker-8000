@@ -1,0 +1,105 @@
+{
+  "_about": "Переменные ролика по каркасу site-order. Здесь выдуманный пример (чайная лавка), им проверена сборка шаблона. Для нового ролика замени значения, ключи не меняй. Страны и города не называть.",
+  "business": {
+    "name": "Чайная Полка",
+    "event": "заказ"
+  },
+  "order": {
+    "number": "2051",
+    "totalText": "640 €",
+    "customer": "Мира Лаврова",
+    "customerShort": "Мира Л.",
+    "customerPhone": "+00 000 000 00 00",
+    "product": "Улун Горный 100 г"
+  },
+  "labels": {
+    "_about": "Тексты интерфейса сайта, как их рисует DOM (для проверок букв и зон). Регистр как на экране после text-transform.",
+    "toast": "Новый заказ",
+    "statusNew": "НОВЫЙ",
+    "statusAccepted": "ПРИНЯТ",
+    "accept": "Принять",
+    "newCountPrefix": "Новые:",
+    "orderPlaced": "Заказ №{n} оформлен",
+    "total": "Итого",
+    "checkoutButton": "ОФОРМИТЬ ЗАКАЗ"
+  },
+  "captions": {
+    "_about": "Две строки максимум; accent: [строка, слово] (с нуля), одно ключевое слово или фраза.",
+    "hook": { "lines": ["Сделаю сайт, который", "принимает заказы"], "accent": [[1, 1]] },
+    "client": { "lines": ["Клиент заказывает", "сам"], "accent": [[1, 0]] },
+    "owner": { "lines": ["Вы видите", "каждый заказ"], "accent": [[1, 0], [1, 1]] },
+    "size": 84
+  },
+  "card": {
+    "tagline": ["Сайты под ключ", "и не только"],
+    "taglineAccent": "под ключ",
+    "action": "Напишите в WhatsApp",
+    "contact": "+00 00 000 00 00",
+    "logo": "brand/logo_alpha.png",
+    "logoPx": [948, 187],
+    "logoInkWidth": 520
+  },
+  "cover": { "lines": ["Сделаю сайт,", "который", "принимает", "заказы"] },
+  "music": {
+    "_about": "Трек выбирает человек на слух. start: секунда трека на сильной доле, с которой начинается ролик; cardBeat: доля ролика, на которую приходит смена фразы (карточка).",
+    "file": "music/track.wav",
+    "title": "Название трека, источник, лицензия",
+    "bpm": 122.033,
+    "start": 5.967,
+    "hookEndBeat": 4,
+    "tapOwnerBeat": 17,
+    "cardBeat": 20,
+    "endBeat": 26,
+    "fadeOut": 1.233,
+    "lufs": -14,
+    "truePeakCeiling": -1.5
+  },
+  "palette": {
+    "_about": "Из CSS сайта (тёмная тема): фон, текст, акцент, светлый акцент для ключевых слов.",
+    "ink": "#0e0c0a",
+    "panel": "#1a1614",
+    "cream": "#f2ece2",
+    "brass": "#b8975a",
+    "brass2": "#d9c08a"
+  },
+  "table": {
+    "_about": "Фото стола (матовое дерево, свободная лицензия): table/wood_full.jpg и table/wood_tile.jpg делает scripts/table_photo.py. photoPx — ширина и высота исходника, worldWidth — сколько мировых px (29 = 1 см) покрывает фото.",
+    "photoPx": [6000, 4000],
+    "worldWidth": 2260
+  },
+  "layout": {
+    "_about": "Точки и рамки на экранах в CSS px захватов. После съёмки взять из states_*.json (el.*). Значения ниже сняты с макета Scent Harbor и совпадают с заглушками make_placeholders.py.",
+    "ownerHookAnchor": [195, 90],
+    "ownerRowAnchor": [195, 344],
+    "ownerTapAnchor": [195, 340],
+    "ownerWideAnchor": [195, 420],
+    "acceptBox": [237, 360.5, 125, 44],
+    "cartAnchor": [596, 1040],
+    "cartKey": [393, 987, 407, 113],
+    "checkoutBox": [393, 1052, 407, 48],
+    "checkoutTap": [470, 1076],
+    "orderTitleAnchor": [24, 145],
+    "orderTotalAnchor": [24, 640],
+    "formKey": [24, 140, 772, 260],
+    "phoneAnchor": [195, 430]
+  },
+  "capture": {
+    "_about": "Съёмка макета в сборке для рекламы (флаг AD_CAPTURE у сайта): без пометок «демо», кабинет владельца, растянутый приход заказа. Сайт и флаг остаются в репозитории сайта, сюда не кладутся.",
+    "baseUrl": "http://localhost:3110",
+    "productPath": "/ru/product/oolong-100",
+    "checkoutPath": "/ru/checkout",
+    "ordersPath": "/ru/orders",
+    "addToCart": "В корзину",
+    "checkoutLink": "Оформить заказ",
+    "nameField": "#name",
+    "phoneField": "#phone",
+    "phoneTyped": "000000000",
+    "storageKeys": { "orders": "shop-orders", "seq": "shop-order-seq" },
+    "exampleOrders": [
+      { "path": "/ru/product/green-50", "daysAgo": 1, "time": "19:40", "name": "Олег Нестеров" },
+      { "path": "/ru/product/black-200", "daysAgo": 1, "time": "21:15", "name": "Ирина Карпова" }
+    ],
+    "locale": "ru-RU",
+    "playwrightModule": "playwright"
+  }
+}

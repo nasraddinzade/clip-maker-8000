@@ -1,0 +1,15 @@
+{
+  "name": "ad-site-order",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "bundle": "remotion bundle src/index.ts --out-dir build/bundle"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.544",
+    "remotion": "4.0.544",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  }
+}
