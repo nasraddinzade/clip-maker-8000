@@ -39,7 +39,10 @@ def err(path, line, text):
 
 def files(*suffixes):
     for p in sorted(ROOT.rglob("*")):
-        if ".git" in p.parts or not p.is_file() or p.suffix not in suffixes:
+        # projects/ (ролики, скопированные из templates/) и node_modules в репозиторий не входят (.gitignore)
+        if ".git" in p.parts or "node_modules" in p.parts or p.relative_to(ROOT).parts[:1] == ("projects",):
+            continue
+        if not p.is_file() or p.suffix not in suffixes:
             continue
         yield p
 

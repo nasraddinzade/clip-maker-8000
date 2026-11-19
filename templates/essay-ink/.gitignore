@@ -1,0 +1,14 @@
+# Тяжёлое, производное и чужое: в репозиторий проекта не кладётся
+node_modules/
+build/
+out/
+src/data/kanji.json
+assets/
+public/fonts/
+public/logo/
+public/audio/
+voice/
+music/
+*.wav
+*.mp3
+*.mp4

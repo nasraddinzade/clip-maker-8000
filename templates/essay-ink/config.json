@@ -1,0 +1,99 @@
+{
+  "_readme": "Всё, что меняется от ролика к ролику: тексты, знаки, раскладки, тайминг, голос, музыка, логотип. Ключи с _ — пояснения, код их не читает. Здесь выдуманный пример: две главы и финал. Описание ключей — README.md, «Переменные config.json».",
+  "title": "Пример эссе",
+  "output": "out/essay.mp4",
+  "video": { "width": 1080, "height": 1920, "fps": 30 },
+  "timing": {
+    "voiceDelay": 1.5,
+    "tail": 1.2,
+    "travel": 1.0,
+    "travelPre": 0.6,
+    "headerStart": 0.05,
+    "loopFrames": 10,
+    "_": "сцена = voiceDelay + голос + tail (у сцены может быть свой tail); переезд travel с, из них travelPre в хвосте прошлой главы; знак главы начинает писаться в headerStart с; loopFrames последних кадров плавно переходят в кадр 0"
+  },
+  "fonts": {
+    "light": "fonts/CormorantGaramond-Light.ttf",
+    "regular": "fonts/CormorantGaramond-Regular.ttf",
+    "medium": "fonts/CormorantGaramond-Medium.ttf",
+    "italic": "fonts/CormorantGaramond-Italic.ttf",
+    "_": "пути внутри public/; ключи light, regular, medium, italic используют подписи и подпись художника"
+  },
+  "logo": {
+    "file": "logo/logo.png",
+    "width": 240,
+    "baseline": 42,
+    "gap": 18,
+    "spot": { "x1": 990, "y0": 300 },
+    "fade": 0.5,
+    "press": 1,
+    "grain": 0.06,
+    "studio": { "text": "Studio", "font": "medium", "size": 46, "tracking": 0.12, "color": [12, 10, 9] },
+    "_": "file — PNG с прозрачным фоном в public/ (null — без логотипа); width — ширина на экране, px; baseline — линия строки studio от верха логотипа, px; spot — правый край и верх подписи в экранных px в момент полной силы; fade — проявление, с; press — сила неровного нажима 0…1; grain — сколько зерна бумаги проступает; studio.text пустой — без строки"
+  },
+  "scenes": [
+    {
+      "id": "water",
+      "module": "example",
+      "seed": 101,
+      "fallbackDuration": 9,
+      "kanji": "水",
+      "caption": { "title": "Вода", "text": "Мягкое точит твёрдое" },
+      "captionLayout": { "title": { "x": 96, "y": 340 }, "idea": { "x": 96, "y": 416, "wrap": 760 } },
+      "layout": { "object": { "x0": 520, "y0": 1180, "x1": 860, "y1": 1120 }, "drop": { "x": 700, "y": 1250 } },
+      "narration": "Глава первая. Вода мягкая, но камень ей уступает. Одна капля ничего не решает.",
+      "object": { "phrase": 2, "word": "камень" },
+      "event": { "phrase": 3, "word": "капля" }
+    },
+    {
+      "id": "fire",
+      "module": "example",
+      "seed": 202,
+      "fallbackDuration": 9,
+      "kanji": "火",
+      "caption": { "title": "Огонь", "text": "Начни первым" },
+      "captionLayout": { "title": { "x": 984, "y": 340, "align": "right" }, "idea": { "x": 984, "y": 416, "align": "right" } },
+      "layout": {
+        "kanji": { "x": 290, "y": 760, "size": 640 },
+        "seal": { "x": 180, "y": 820, "size": 84 },
+        "object": { "x0": 120, "y0": 1180, "x1": 520, "y1": 1110 },
+        "drop": { "x": 300, "y": 1250 }
+      },
+      "narration": "Глава вторая. Огонь не ждёт приглашения. Искра падает, и дело начато.",
+      "object": { "phrase": 2, "word": "Огонь" },
+      "event": { "phrase": 3, "word": "Искра" }
+    },
+    {
+      "id": "finale",
+      "module": "finale",
+      "seed": 303,
+      "fallbackDuration": 8,
+      "seal": { "char": "空", "size": 300, "x": 730, "y": 1070 },
+      "caption": { "title": "", "text": "Делай, что должно" },
+      "narration": "И последнее. Делай, что должно.",
+      "pauses": [1.0],
+      "tail": 2.6,
+      "signatureOffset": -0.11
+    }
+  ],
+  "_scenes": "id — латиницей; module — файл src/scenes/<module>.js; seed — случайность сцены; kanji — знак главы (нужен в src/data/kanji.json); caption.title — заголовок капителью, caption.text — основная строка; captionLayout — места строк в экранных px (title, idea: x, y, align, wrap, size); narration — текст голоса, фразы делятся по . ! ? …; object/event — к какому слову фразы (с 1) привязаны предмет и событие; layout — места элементов сцены-образца в координатах главы; pauses — паузы между фразами, с; tail — хвост сцены, с; seal — печать финала; signatureOffset — начало подписи художника от конца файла голоса, с",
+  "voice": {
+    "engine": "silence",
+    "dir": "voice",
+    "sentencePause": 0.4,
+    "charsPerSecond": 14,
+    "_": "engine: silence — тишина нужной длины по числу букв (charsPerSecond), чтобы собрать и проверить ролик до голоса; files — готовый голос: voice/<id>.wav на сцену и, для привязки событий к словам, voice/<id>.json с фразами и словами (README, «Голос»). Синтез и выбор голоса — навык video-voice, здесь не делаются"
+  },
+  "music": {
+    "file": "music/track.mp3",
+    "fadeIn": 1.5,
+    "fadeOut": 3.0,
+    "belowVoiceDb": -22,
+    "_": "ровный слой без приглушения (CLAUDE.md, «Голос и звук»): громкость музыки = громкость голоса + belowVoiceDb, коридор −21…−23 дБ; итог −14 LUFS, true peak −1,5 dBTP. Нет файла — дорожка без музыки"
+  },
+  "kanjiExtra": [],
+  "checks": {
+    "zoneElements": ["иероглиф", "печать", "предмет", "капля", "линия кистью"],
+    "_": "начала имён элементов (keepout и addRegion), которые проверяются на зоны интерфейса; фон и продолжение картинки в список не входят"
+  }
+}
