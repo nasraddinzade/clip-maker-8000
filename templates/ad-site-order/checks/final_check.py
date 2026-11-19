@@ -65,8 +65,9 @@ elif mode == "cover":
     print(f"   first capital at a 120 px tile: {cap:.1f} px {'ok' if cap >= 7 else 'FAIL (< 7)'}")
     if cap < 7: fails.append("title too small at 120 px")
     a = np.asarray(img).astype(np.float32); band = a[max(0, y0 - 40):y1 + 40]
-    print(f"   title band mean luminance {band.mean():.0f}, title pixels mean {a[m].mean():.0f} (contrast {a[m].mean() - band.mean():.0f})")
-    if a[m].mean() - band.mean() < 60: fails.append("title contrast")
+    # light title on a dark veil or dark title on a light one (a light palette): the difference either way
+    print(f"   title band mean luminance {band.mean():.0f}, title pixels mean {a[m].mean():.0f} (contrast {abs(a[m].mean() - band.mean()):.0f})")
+    if abs(a[m].mean() - band.mean()) < 60: fails.append("title contrast")
     for name, (a0, b0) in {"1x1": (420, 1500), "3x4": (240, 1680)}.items():
         Image.open(sys.argv[2]).convert("RGB").crop((0, a0, 1080, b0)).resize((120, int(120 * (b0 - a0) / 1080)), Image.LANCZOS).save(sys.argv[2].replace(".png", f"_tile_{name}_120.png"))
 elif mode == "av":

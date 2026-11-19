@@ -25,9 +25,18 @@
   },
   "captions": {
     "_about": "Две строки максимум; accent: [строка, слово] (с нуля), одно ключевое слово или фраза.",
-    "hook": { "lines": ["Сделаю сайт, который", "принимает заказы"], "accent": [[1, 1]] },
-    "client": { "lines": ["Клиент заказывает", "сам"], "accent": [[1, 0]] },
-    "owner": { "lines": ["Вы видите", "каждый заказ"], "accent": [[1, 0], [1, 1]] },
+    "hook": {
+      "lines": ["Сделаю сайт, который", "принимает заказы"],
+      "accent": [[1, 1]]
+    },
+    "client": {
+      "lines": ["Клиент заказывает", "сам"],
+      "accent": [[1, 0]]
+    },
+    "owner": {
+      "lines": ["Вы видите", "каждый заказ"],
+      "accent": [[1, 0], [1, 1]]
+    },
     "size": 84
   },
   "card": {
@@ -39,7 +48,9 @@
     "logoPx": [948, 187],
     "logoInkWidth": 520
   },
-  "cover": { "lines": ["Сделаю сайт,", "который", "принимает", "заказы"] },
+  "cover": {
+    "lines": ["Сделаю сайт, ", "который", "принимает", "заказы"]
+  },
   "music": {
     "_about": "Трек выбирает человек на слух. start: секунда трека на сильной доле, с которой начинается ролик; cardBeat: доля ролика, на которую приходит смена фразы (карточка).",
     "file": "music/track.wav",
@@ -54,18 +65,71 @@
     "lufs": -14,
     "truePeakCeiling": -1.5
   },
-  "palette": {
-    "_about": "Из CSS сайта (тёмная тема): фон, текст, акцент, светлый акцент для ключевых слов.",
-    "ink": "#0e0c0a",
-    "panel": "#1a1614",
-    "cream": "#f2ece2",
-    "brass": "#b8975a",
-    "brass2": "#d9c08a"
+  "variant": {
+    "_about": "Варианты движения и света, чтобы ролики по одному каркасу не повторялись. Такты, музыка, доли, тексты подписей, карточки и обложки, их места и время от варианта не меняются. Проверенные комбинации в README шаблона, таблица «Варианты». cam: числа камер (имена как в src/scenes.ts env), которые нужны этой комбинации, чтобы прошли зоны и подписи.",
+    "enterFrom": "top",
+    "mirror": false,
+    "light": "left",
+    "drift": "push",
+    "palettePreset": "dark",
+    "cam": {}
   },
-  "table": {
-    "_about": "Фото стола (матовое дерево, свободная лицензия): table/wood_full.jpg и table/wood_tile.jpg делает scripts/table_photo.py. photoPx — ширина и высота исходника, worldWidth — сколько мировых px (29 = 1 см) покрывает фото.",
-    "photoPx": [6000, 4000],
-    "worldWidth": 2260
+  "palettes": {
+    "_about": "Готовые палитры, одна выбирается в variant.palettePreset. Один акцент: accent на экранах, accentText (тот же тон, светлее или темнее) в подписях и на карточке. ink, panel, text, accent подставляются сайту при съёмке (capture.cssVars). mode: тёмная или светлая схема сайта и подписей. veil: подложка под подписями, карточкой и обложкой, halo: её плотность за подписью в центре и на краю (для контраста 7:1). table: фото стола (scripts/table_photo.py), grade: тон фото, shade: глубина затемнения стола к краям (1 как у Scent Harbor).",
+    "dark": {
+      "mode": "dark",
+      "ink": "#0e0c0a",
+      "panel": "#1a1614",
+      "text": "#f2ece2",
+      "accent": "#b8975a",
+      "accentText": "#d9c08a",
+      "veil": "#0a0807",
+      "halo": [0.62, 0.38],
+      "table": {
+        "full": "table/wood_full.jpg",
+        "tile": "table/wood_tile.jpg",
+        "photoPx": [6000, 4000],
+        "worldWidth": 2260,
+        "grade": "brightness(0.78) contrast(0.95) saturate(0.92)",
+        "shade": 1
+      }
+    },
+    "light": {
+      "mode": "light",
+      "ink": "#f4efe7",
+      "panel": "#ffffff",
+      "text": "#1c1916",
+      "accent": "#2e6b5e",
+      "accentText": "#12352c",
+      "veil": "#f4efe7",
+      "halo": [0.95, 0.75],
+      "table": {
+        "full": "table/light_full.jpg",
+        "tile": "table/light_tile.jpg",
+        "photoPx": [6000, 4000],
+        "worldWidth": 2260,
+        "grade": "brightness(0.95) contrast(0.95) saturate(0.9)",
+        "shade": 0.35
+      }
+    },
+    "color": {
+      "mode": "dark",
+      "ink": "#13343b",
+      "panel": "#1b444c",
+      "text": "#f3efe6",
+      "accent": "#e9875b",
+      "accentText": "#f4a682",
+      "veil": "#0a1c20",
+      "halo": [0.62, 0.38],
+      "table": {
+        "full": "table/wood_full.jpg",
+        "tile": "table/wood_tile.jpg",
+        "photoPx": [6000, 4000],
+        "worldWidth": 2260,
+        "grade": "brightness(0.78) contrast(0.95) saturate(0.92)",
+        "shade": 1
+      }
+    }
   },
   "layout": {
     "_about": "Точки и рамки на экранах в CSS px захватов. После съёмки взять из states_*.json (el.*). Значения ниже сняты с макета Scent Harbor и совпадают с заглушками make_placeholders.py.",
@@ -94,12 +158,33 @@
     "nameField": "#name",
     "phoneField": "#phone",
     "phoneTyped": "000000000",
-    "storageKeys": { "orders": "shop-orders", "seq": "shop-order-seq" },
+    "storageKeys": {
+      "orders": "shop-orders",
+      "seq": "shop-order-seq"
+    },
     "exampleOrders": [
-      { "path": "/ru/product/green-50", "daysAgo": 1, "time": "19:40", "name": "Олег Нестеров" },
-      { "path": "/ru/product/black-200", "daysAgo": 1, "time": "21:15", "name": "Ирина Карпова" }
+      {
+        "path": "/ru/product/green-50",
+        "daysAgo": 1,
+        "time": "19:40",
+        "name": "Олег Нестеров"
+      },
+      {
+        "path": "/ru/product/black-200",
+        "daysAgo": 1,
+        "time": "21:15",
+        "name": "Ирина Карпова"
+      }
     ],
     "locale": "ru-RU",
-    "playwrightModule": "playwright"
+    "playwrightModule": "playwright",
+    "enterParam": "adEnter",
+    "cssVars": {
+      "_about": "Имена CSS-переменных сайта для цветов палитры; пустой объект: сайт снимается в своих цветах.",
+      "ink": "--bg",
+      "panel": "--panel",
+      "text": "--text",
+      "accent": "--accent"
+    }
   }
 }

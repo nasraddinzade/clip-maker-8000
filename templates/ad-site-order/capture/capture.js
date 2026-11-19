@@ -8,12 +8,15 @@
 // Every state: a viewport PNG (public/dev/<device>/<state>.png) and boxes, texts with letter heights, and words
 // (src/states/states_<device>.json), the format the reel and the checks read.
 // The site must run its ad build (no «demo» notices, the owner's dashboard with a stretched arrival and an accept button).
+// The variant reaches the site here: the palette's colours as CSS variables (capture.cssVars) and its colour scheme, and
+// the side the notice and the new row slide in from as a query parameter of the orders page (capture.enterParam). The
+// ad build must read them; checks/variant_check.py capture tells whether the captures follow them.
 // node capture/capture.js tablet|phone          (config.json «capture»; Playwright from capture.playwrightModule)
 const fs = require("fs");
 const path = require("path");
 const ROOT = path.join(__dirname, "..");
 const C = JSON.parse(fs.readFileSync(path.join(ROOT, "config.json"), "utf8"));
-const K = C.capture, L = C.labels;
+const K = C.capture, L = C.labels, V = C.variant, P = C.palettes[V.palettePreset];
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || K.playwrightModule);
 const DEVICES = { phone: { width: 390, height: 844, dsf: 4, touch: true }, tablet: { width: 820, height: 1180, dsf: 3, touch: true } };
 const dev = process.argv[2], D = DEVICES[dev];
@@ -22,6 +25,11 @@ const OUT = path.join(ROOT, "public", "dev", dev);
 fs.mkdirSync(OUT, { recursive: true });
 fs.mkdirSync(path.join(ROOT, "src", "states"), { recursive: true });
 const states = {};
+const SCHEME = P.mode === "light" ? "light" : "dark";
+const VARS = Object.entries(K.cssVars || {}).filter(([k]) => !k.startsWith("_") && P[k]).map(([k, name]) => `${name}:${P[k]}`).join(";");
+const ORDERS = K.ordersPath + (K.enterParam ? `?${K.enterParam}=${V.enterFrom}` : "");
+// every page of every context gets the palette before the site's own script runs
+async function themed(ctx) { if (VARS) await ctx.addInitScript((css) => { const put = () => { const st = document.createElement("style"); st.textContent = `:root{${css}}`; document.documentElement.appendChild(st); }; if (document.documentElement) put(); else document.addEventListener("DOMContentLoaded", put); }, VARS); return ctx; }
 
 // runs in the page: boxes (viewport CSS px), every text node with its letter height, every word (for the checks)
 const BOXES = (opt) => {
@@ -63,7 +71,7 @@ const putStore = ([k, st]) => { if (st.orders) localStorage.setItem(k.orders, st
 
 (async () => {
   const browser = await chromium.launch({ headless: true, args: ["--hide-scrollbars"] });
-  const ctx = await browser.newContext({ viewport: { width: D.width, height: D.height }, deviceScaleFactor: D.dsf, isMobile: D.touch, hasTouch: D.touch, locale: K.locale, colorScheme: "dark" });
+  const ctx = await themed(await browser.newContext({ viewport: { width: D.width, height: D.height }, deviceScaleFactor: D.dsf, isMobile: D.touch, hasTouch: D.touch, locale: K.locale, colorScheme: SCHEME }));
   const page = await ctx.newPage();
   await page.goto(K.baseUrl + K.productPath, { waitUntil: "load" });
   await page.evaluate(() => localStorage.clear());
@@ -75,7 +83,7 @@ const putStore = ([k, st]) => { if (st.orders) localStorage.setItem(k.orders, st
     let store = null;
     for (const ex of K.exampleOrders) {
       const n = new Date(), [hh, mi] = ex.time.split(":").map(Number);
-      const c = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: K.locale, colorScheme: "dark" });
+      const c = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: K.locale, colorScheme: SCHEME });
       await c.clock.setFixedTime(new Date(n.getFullYear(), n.getMonth(), n.getDate() - ex.daysAgo, hh, mi));
       const p = await c.newPage(); await p.goto(K.baseUrl + ex.path, { waitUntil: "load" });
       if (store) await p.evaluate(putStore, [K.storageKeys, store]);
@@ -89,11 +97,11 @@ const putStore = ([k, st]) => { if (st.orders) localStorage.setItem(k.orders, st
     }
     if (store) await page.evaluate(putStore, [K.storageKeys, store]);
     // the owner's phone: its own browser and clock, watching the orders page
-    const oc = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, locale: K.locale, colorScheme: "dark" });
+    const oc = await themed(await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, locale: K.locale, colorScheme: SCHEME }));
     await oc.clock.install();
     const op = await oc.newPage(); await op.goto(K.baseUrl + K.productPath, { waitUntil: "load" });
     if (store) await op.evaluate(putStore, [K.storageKeys, store]);
-    await op.goto(K.baseUrl + K.ordersPath, { waitUntil: "load" });
+    await op.goto(K.baseUrl + ORDERS, { waitUntil: "load" });
     await shot(op, "owner_before", states);
     // the client's path on the tablet: product, cart drawer, filled form, the order page
     await page.goto(K.baseUrl + K.productPath, { waitUntil: "load" });

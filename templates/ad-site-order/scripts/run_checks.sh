@@ -40,6 +40,12 @@ echo "== linear curves: a known bad input, then the sources"
 printf 'const a = interpolate(f, [0, 10], [0, 1]);\nconst r = (t - 0.5) / 0.2;\n' > bad_src.ts
 python ../checks/final_check.py linear bad_src.ts | tail -1
 python ../checks/final_check.py linear ../src/Reel.tsx ../src/scenes.ts ../src/Views.tsx ../src/Flat.tsx ../src/flatgeo.ts; echo "exit $?"
+echo "== variant: the captures follow config.json (enter side, palette); a known bad input, then the captures"
+python ../checks/variant_check.py capture --bad | tail -1
+python ../checks/variant_check.py capture; echo "exit $?"
+echo "== variant: the scene (drift keys, mirror, light side, screens not mirrored); a known bad input, then the storyboard"
+python ../checks/variant_check.py scene board_variant.json stills/s05.png stills/s11.png --bad | tail -1
+python ../checks/variant_check.py scene board_variant.json stills/s05.png stills/s11.png; echo "exit $?"
 echo "== logo on the card: a known bad input, then the card"
 python ../checks/logo_check.py card.png card_mask.png --bad | tail -1
 python ../checks/logo_check.py card.png card_mask.png; echo "exit $?"
@@ -52,4 +58,11 @@ python ../scripts/music_cut.py --measure reel.mp4
 python ../checks/final_check.py av reel.mp4; echo "exit $?"
 fi
 } > checks.log 2>&1
+# every still, the card and the cover at 360 px wide on one sheet (out/crop360.png): look at it as on a phone
+python -c "
+from PIL import Image; import glob
+fs = sorted(glob.glob('stills/s*.png')) + ['card.png', 'cover.png']; ims = [Image.open(f).convert('RGB').resize((360, 640), Image.LANCZOS) for f in fs]
+sheet = Image.new('RGB', (360 * 8, 640 * ((len(ims) + 7) // 8)), (40, 40, 40))
+for i, im in enumerate(ims): sheet.paste(im, (360 * (i % 8), 640 * (i // 8)))
+sheet.save('crop360.png')"
 grep -E "^exit|^OK|^FAIL|   FAIL|нарушений|without text|verdict|video h264" checks.log

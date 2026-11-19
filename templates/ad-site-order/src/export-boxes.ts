@@ -7,9 +7,9 @@
 //  - tablet to phone size on the frame (решение look13: from 1.6), the phone's frame in the last still.
 import { writeFileSync } from "fs";
 import { BH, FCam, FDev, bodyBoxF, bodyQuad, letterPx, scrBox } from "./flatgeo";
-import { CFG, exact, fmt } from "./cfg";
+import { CFG, V, exact, fmt } from "./cfg";
 const LB = CFG.labels, NUM = exact(CFG.order.number), TOTAL = exact(CFG.order.totalText);
-import { BPH, BUYER_FROM, OWN, STILLS13, TAB, TABLET_KEY, TIMELINE, buyerAt, ownerShotAt, HOOK_CAM, ACCEPT_AT } from "./scenes";
+import { BPH, BUYER_FROM, OWN, STILLS13, TAB, TABLET_KEY, TIMELINE, TL, buyerAt, ownerShotAt, HOOK_CAM, ACCEPT_AT } from "./scenes";
 import tab from "./states/states_tablet.json";
 import ph from "./states/states_phone.json";
 
@@ -101,6 +101,19 @@ const dst = process.argv[2] || "board13.json";
 writeFileSync(dst, JSON.stringify(out, null, 1));
 writeFileSync(dst.replace(".json", "_elements.json"), JSON.stringify(elements));
 writeFileSync(dst.replace(".json", "_timeline.json"), JSON.stringify(TIMELINE, null, 1));
+// the variant (checks/variant_check.py scene): the client's camera at its keys against «push» (the same keys at the same
+// moments), its largest departure from «push» between them, and where the two buyer devices stand in the wide still
+{
+  const keys = [0, TL.push1, TL.back1, TL.into1, TL.tap, TL.page, TL.res1], dist = (a: FCam, b: FCam) => Math.hypot(a.x - b.x, a.y - b.y, a.z - b.z) + Math.abs(a.pitch - b.pitch);
+  const keyDiff = keys.map((t) => ({ t: Math.round(t * 1000) / 1000, world: Math.round(dist(buyerAt(t).cam, buyerAt(t, "push").cam) * 10) / 10 }));
+  let maxDev = 0, maxAt = 0;
+  for (let f = 0; f <= Math.round(TL.end * 30); f++) { const t = f / 30, dv = dist(buyerAt(t).cam, buyerAt(t, "push").cam); if (dv > maxDev) { maxDev = dv; maxAt = t; } }
+  const wide = (out as any[]).find((o) => o.still === "05");
+  const cx = (b: number[]) => Math.round((b[0] + b[2]) / 2);
+  writeFileSync(dst.replace(".json", "_variant.json"), JSON.stringify({ variant: V, keyDiff, between: { world: Math.round(maxDev), t: Math.round(maxAt * 100) / 100 },
+    keyNames: ["start", "phone 1T", "wide 2T", "cart 3T+0.6", "tap 5T", "page 6T", "result"], // the start is not a key: «sweep» begins beside the phone
+    wide: wide ? { tabletX: cx(wide.bodies.tablet), phoneX: cx(wide.bodies.phone) } : null }, null, 1));
+}
 for (const o of out as any[]) console.log(o.still, o.t, "pitch", o.pitch, JSON.stringify(o.bodies), "keys", JSON.stringify(o.keys), "cut", o.cutWords.length, o.cutWords.slice(0, 5).join(" "), "under", o.underBottle.length, o.underBottle.slice(0, 3).join(" "), o.sizeRatio ? "ratio " + JSON.stringify(o.sizeRatio) : "", "\n   ev", o.events.map((e: any) => `${e.text}:${e.letterAt360}`).join(" "), "| info", o.info.map((e: any) => `${e.text}:${e.letterAt360}`).join(" "));
 
 // the hook's motion test frame by frame (0-2.0 s, the owner's phone): cut words and the event letters per frame

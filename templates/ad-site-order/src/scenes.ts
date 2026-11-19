@@ -10,22 +10,24 @@
 //              «Принять»: «Новый» -> «ПРИНЯТ», held 0.9 s
 import { Spec } from "./devices";
 import { BH, BW, FCam, FDev, camLook, mixCam } from "./flatgeo";
-import { CM } from "./setgeo";
-import { CFG } from "./cfg";
+import { CM, MIR, TABLE } from "./setgeo";
+import { CFG, V, env } from "./cfg";
 const LY = CFG.layout;
 
-const env = (k: string, d: number) => Number(process.env[k] || d);
 const PB = 0.5, TB = 0.585; // world px per CSS px: phone body 15 x 7.2 cm, tablet body 25.3 x 17.9 cm (11-inch tablet)
 export const PHONE: Spec = { id: "phone", dir: "dev/phone", dsf: 4, sw: 390, sh: 844, bez: [13, 13, 13, 13], radius: 0.125, depth: 0.095, header: 65, base: PB, world: [0, 0, 0] };
 export const OWNER_SPEC: Spec = { ...PHONE, dir: "dev/tablet", dsf: 3 }; // the owner's phone is captured in the tablet run (one order on both) // the owner's phone: captured in the tablet's run
 export const TABLET: Spec = { id: "tablet", dir: "dev/tablet", dsf: 3, sw: 820, sh: 1180, bez: [26, 26, 26, 26], radius: 0.06, depth: 0.03, header: 81, base: TB, world: [0, 0, 0] };
 
 // ---------- the owner's table ----------
-export const OWN: FDev = { spec: OWNER_SPEC, x: 0, z: 1150, yaw: env("OYAW", -0.5), thick: 0.8 * CM };
+// variant.mirror: device places and yaw mirrored left-right (MIR = -1), the screens themselves never (worldOf keeps the
+// screen's own left-right), so every text reads as captured
+export const OWN: FDev = { spec: OWNER_SPEC, x: 0, z: 1150, yaw: MIR * env("OYAW", -0.5), thick: 0.8 * CM };
 // the wood under each table: where the photo's top-left corner lies (world x, far z); the photo (2260 x 1507 world px)
 // lies under the devices at full resolution; the owner's phone lies on another part of it than the buyer's devices
-export const OWN_WOOD = { x: env("OWX", -1600), z: 1150 + 760 };
-export const BUY_WOOD = { x: env("BWX", -900), z: 1150 + 800 };
+const mirX = (x: number) => (MIR > 0 ? x : -(x + TABLE.worldWidth)); // the photo's left corner when the world is mirrored
+export const OWN_WOOD = { x: mirX(env("OWX", -1600)), z: 1150 + 760 };
+export const BUY_WOOD = { x: mirX(env("BWX", -900)), z: 1150 + 800 };
 // look15 (decision): the offer says who makes it; 50 px: its capitals 12.3 px at 360 (measured on the mask)
 export const HOOK_CAPTION = { lines: CFG.captions.hook.lines, x: 70, y: 272, size: env("CAPS", CFG.captions.size), accent: CFG.captions.hook.accent as [number, number][] };
 export const FIN_CAPTION = { lines: CFG.captions.owner.lines, x: 70, y: 272, size: env("CAPS", CFG.captions.size), accent: CFG.captions.owner.accent as [number, number][] };
@@ -41,14 +43,16 @@ export const ACCEPT_AT: [number, number] = [LY.acceptBox[0] + LY.acceptBox[2] / 
 export const ACCEPT_BOX = LY.acceptBox; // the owner's «accept» button (CSS px of the capture)
 
 // ---------- the buyer's table ----------
-export const TAB: FDev = { spec: TABLET, x: 0, z: 1150, yaw: env("TYAW", 2.5), thick: 0.6 * CM };
+export const TAB: FDev = { spec: TABLET, x: 0, z: 1150, yaw: MIR * env("TYAW", 2.5), thick: 0.6 * CM };
 const tw = BW(TABLET) * TB, pw = BW(PHONE) * PB, th = BH(TABLET) * TB, phh = BH(PHONE) * PB;
-export const BPH: FDev = { spec: PHONE, x: tw / 2 + env("PGAP", 8) * CM + pw / 2, z: 1150 - (th - phh) / 2 + env("PDZ", 6) * CM, yaw: env("PYAW", -7), thick: 0.8 * CM };
+export const BPH: FDev = { spec: PHONE, x: MIR * (tw / 2 + env("PGAP", 8) * CM + pw / 2), z: 1150 - (th - phh) / 2 + env("PDZ", 6) * CM, yaw: MIR * env("PYAW", -7), thick: 0.8 * CM };
 // camera keys (local time of the buyer part)
 const K0 = camLook(BPH, LY.phoneAnchor[0], LY.phoneAnchor[1], env("K0X", 500), env("K0Y", 905), env("K0S", 0.95), env("K0P", 66)); // the product: title and price
 // look15 (review: the caption stood over a still card): the shot starts wider and the camera moves in on the phone
 const K0W = camLook(BPH, LY.phoneAnchor[0], LY.phoneAnchor[1], env("K0WX", 470), env("K0WY", 930), env("K0WS", 0.85), env("K0WP", 62));
-const K1 = camLook(TAB, 410, 590, env("K1X", 280), env("K1Y", 1000), env("K1S", 0.64), 60); // wide: both devices
+// the wide plan holds both devices: mirrored, the tablet stands at the right of the frame and the phone at its left
+const K1X = MIR > 0 ? env("K1X", 280) : 1080 - env("K1X", 280);
+const K1 = camLook(TAB, 410, 590, K1X, env("K1Y", 1000), env("K1S", 0.64), 60); // wide: both devices
 // look15 (review: an empty lower third): the cart closer, the tablet runs out under the platform's lower band
 const K2 = camLook(TAB, LY.cartAnchor[0], LY.cartAnchor[1], env("K2X", 600), env("K2Y", 1192), env("K2S", 0.82), env("K2P", 64)); // the cart: total and «Оформить заказ»
 const K3 = camLook(TAB, LY.orderTitleAnchor[0], LY.orderTitleAnchor[1], env("K3X", 110), env("K3Y", 740), env("K3S", 1.52), env("K3P", 64)); // «Заказ №1048 оформлен», the whole width
@@ -71,10 +75,24 @@ export const BUY_CAPTION = BUY_CAPTIONS[0];
 export const easeOut = (u: number) => 1 - Math.pow(1 - Math.min(1, Math.max(0, u)), 3);
 export const smooth = (u: number) => { const v = Math.min(1, Math.max(0, u)); return v * v * (3 - 2 * v); };
 const glide = (t: number, t0: number, t1: number) => { const u = Math.min(1, Math.max(0, (t - t0) / (t1 - t0))); return u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2; };
-export function buyerAt(t: number) {
-  let cam = mixCam(mixCam(K0W, K0, glide(t, 0, TL.push1)), K1, glide(t, TL.back0, TL.back1));
+// variant.drift «sweep»: the same keys at the same moments (K0 on 1T, K1 on 2T, K2 at 3T+0.6, the tap, K3 at the page
+// cut, K3B at the end), but the camera travels across the table diagonally instead of straight in: the opening starts
+// beside and above the phone (the client part's first frame is not a key), the wide plan drifts on during its hold, the
+// push down the order page bows aside and comes back. The travel goes from the phone's side to the tablet's (content
+// moves right in the frame, left when mirrored). Offsets in frame px: SW0X SW0Y SW1X SW1Y SW3X SW3Y.
+const SD = MIR; // +1: the content moves right in the frame
+const K0W_S = camLook(BPH, LY.phoneAnchor[0], LY.phoneAnchor[1], env("K0X", 500) - SD * env("SW0X", 110), env("K0Y", 905) - env("SW0Y", 50), env("K0WS", 0.85), env("K0WP", 62));
+const K1_S = camLook(TAB, 410, 590, K1X + SD * env("SW1X", 60), env("K1Y", 1000) - env("SW1Y", 20), env("K1S", 0.64), 60);
+const K3_S = camLook(TAB, LY.orderTitleAnchor[0], LY.orderTitleAnchor[1], env("K3X", 110) - SD * env("SW3X", 40), env("K3Y", 740) + env("SW3Y", 30), env("K3S", 1.52), env("K3P", 64)); // the bow's far point
+export function buyerAt(t: number, drift: string = V.drift) {
+  const sw = drift === "sweep";
+  let cam = mixCam(mixCam(sw ? K0W_S : K0W, K0, glide(t, 0, TL.push1)), K1, glide(t, TL.back0, TL.back1));
+  if (sw) cam = mixCam(cam, K1_S, glide(t, TL.back1, TL.into0)); // the wide plan drifts on during its hold
   cam = mixCam(cam, K2, glide(t, TL.into0, TL.into1));
-  if (t >= TL.page) cam = mixCam(K3, K3B, glide(t, TL.page, TL.res1)); // the cut to the page, then the slow push to «Итого»
+  if (t >= TL.page) {
+    cam = mixCam(K3, K3B, glide(t, TL.page, TL.res1)); // the cut to the page, then the slow push to «Итого»
+    if (sw) { const b = Math.sin(Math.PI * smooth((t - TL.page) / (TL.res1 - TL.page))); cam = { ...cam, x: cam.x + (K3_S.x - K3.x) * b, y: cam.y + (K3_S.y - K3.y) * b, z: cam.z + (K3_S.z - K3.z) * b }; }
+  }
   const tabletShot = t >= TL.page ? "order" : t >= TL.form ? "contacts_filled" : "drawer";
   const ring = smooth((t - (TL.tap - 0.14)) / 0.14), out = smooth((t - (TL.tap + 0.02)) / 0.08); // gone before the form (look16: the form from tap + 0.12)
   const captions = BUY_CAPTIONS.map((c) => {

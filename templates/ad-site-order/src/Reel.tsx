@@ -2,7 +2,7 @@ import React from "react";
 import { AbsoluteFill, Audio, Img, staticFile, useCurrentFrame } from "remotion";
 import { Cap, CapCfg } from "./Flat";
 import { BuyerView, OwnerView } from "./Views";
-import { CFG } from "./cfg";
+import { CFG, rgba } from "./cfg";
 import { PAL } from "./setgeo";
 import { easeOut, ACCEPT_BOX, BUYER_FROM, CARD_AT, END, FIN_CAP, FIN_CAPTION, FIN_FROM, FIN_ROW, FIN_TAP, FIN_WIDE, HOOK_CAM, HOOK_CAPTION, ROW0, ROW1, TAP_OWNER, ownerShotAt, smooth } from "./scenes";
 import { FCam, mixCam } from "./flatgeo";
@@ -32,7 +32,8 @@ const OwnerFinal: React.FC<{ t: number; mask?: boolean }> = ({ t, mask }) => {
 
 const LOGO_W = CFG.card.logoPx[0] * (CFG.card.logoInkWidth / (CFG.card.logoPx[0] - 16)); // the word (ink) logoInkWidth px wide
 const CARD_LINES = { tagline: CFG.card.tagline, action: CFG.card.action, phone: CFG.card.contact };
-/** the card: the scene behind dims, the logo lands on the phrase change, the lines rise on half beats */
+/** the card: the scene behind dims under the palette's veil, the logo lands on the phrase change, the lines rise on half
+ *  beats. Texts, places and timing are the same in every variant; colours follow the palette. */
 export const Card16: React.FC<{ t: number; mask?: boolean }> = ({ t, mask }) => {
   const dim = smooth((t - (CARD_AT - 0.25)) / 0.25);
   if (dim <= 0) return null;
@@ -40,18 +41,18 @@ export const Card16: React.FC<{ t: number; mask?: boolean }> = ({ t, mask }) => 
   const line = (d: number, el: React.ReactNode) => <div style={{ opacity: k(d), transform: `translateY(${((1 - k(d)) * 24).toFixed(1)}px)` }}>{el}</div>;
   const white = (c: string) => (mask ? "#fff" : c);
   return (
-    <AbsoluteFill style={{ background: mask ? "#000" : `rgba(10,8,7,${(0.58 * dim).toFixed(3)})` }}>
+    <AbsoluteFill style={{ background: mask ? "#000" : rgba(PAL.veil, +(0.58 * dim).toFixed(3)) }}>
       <div style={{ position: "absolute", left: 80, top: 380, width: 920 }}>
         <div style={{ opacity: k(0), transform: `scale(${(0.94 + 0.06 * k(0)).toFixed(3)})`, transformOrigin: "0 100%" }}>
           {/* the studio's logo (config.json card.logo, a transparent PNG made by scripts/logo_alpha.py): shape and colour as given, on the card only */}
           <Img src={staticFile(CFG.card.logo)} style={{ display: "block", width: LOGO_W, height: LOGO_W * (CFG.card.logoPx[1] / CFG.card.logoPx[0]), marginLeft: -8 * (LOGO_W / CFG.card.logoPx[0]), filter: mask ? "brightness(0) invert(1)" : undefined }} />
         </div>
         <div style={{ height: 44 }} />
-        {line(0.04, <div style={{ fontFamily: "Jost", fontWeight: 600, fontSize: 84, lineHeight: 1.04, color: white(PAL.cream) }}>{CARD_LINES.tagline.map((l, i) => <div key={i}>{accentIn(l, CFG.card.taglineAccent, white(PAL.brass2))}</div>)}</div>)}
+        {line(0.04, <div style={{ fontFamily: "Jost", fontWeight: 600, fontSize: 84, lineHeight: 1.04, color: white(PAL.capText) }}>{CARD_LINES.tagline.map((l, i) => <div key={i}>{accentIn(l, CFG.card.taglineAccent, white(PAL.capAccent))}</div>)}</div>)}
         <div style={{ height: 56 }} />
-        {line(0.08, <div style={{ fontFamily: "Playfair Display", fontWeight: 500, fontSize: 72, lineHeight: 1.15, color: white(PAL.cream) }}>{CARD_LINES.action}</div>)}
+        {line(0.08, <div style={{ fontFamily: "Playfair Display", fontWeight: 500, fontSize: 72, lineHeight: 1.15, color: white(PAL.capText) }}>{CARD_LINES.action}</div>)}
         <div style={{ height: 18 }} />
-        {line(0.12, <div style={{ fontFamily: "Jost", fontWeight: 600, fontSize: 84, lineHeight: 1.1, letterSpacing: 1, color: white(PAL.brass2) }}>{CARD_LINES.phone}</div>)}
+        {line(0.12, <div style={{ fontFamily: "Jost", fontWeight: 600, fontSize: 84, lineHeight: 1.1, letterSpacing: 1, color: white(PAL.capAccent) }}>{CARD_LINES.phone}</div>)}
       </div>
     </AbsoluteFill>
   );
@@ -69,7 +70,7 @@ export const Reel16: React.FC<{ mask?: boolean; audio?: boolean }> = ({ mask, au
   return (
     <AbsoluteFill style={{ background: "#000" }}>
       {/* look16 review: no black slide; the scene stays behind the card, blurred and darkened by depth */}
-      <AbsoluteFill style={{ filter: t >= CARD_AT - 0.25 && !mask ? `blur(${(26 * smooth((t - (CARD_AT - 0.25)) / 0.25)).toFixed(1)}px) brightness(${(1 - 0.35 * smooth((t - (CARD_AT - 0.25)) / 0.25)).toFixed(3)})` : undefined }}>{scene}</AbsoluteFill>
+      <AbsoluteFill style={{ filter: t >= CARD_AT - 0.25 && !mask ? `blur(${(26 * smooth((t - (CARD_AT - 0.25)) / 0.25)).toFixed(1)}px) brightness(${(1 - (PAL.dark ? 0.35 : 0) * smooth((t - (CARD_AT - 0.25)) / 0.25)).toFixed(3)})` : undefined }}>{scene}</AbsoluteFill>
       <Card16 t={t} mask={mask} />
       {audio && !mask ? <Audio src={staticFile("audio/reel.wav")} /> : null}
     </AbsoluteFill>
@@ -81,7 +82,7 @@ export const COVER_TITLE: CapCfg = { lines: CFG.cover.lines, x: 90, y: 600, size
 export const Cover16: React.FC<{ mask?: boolean }> = ({ mask }) => (
   <AbsoluteFill style={{ background: "#000" }}>
     {mask ? null : <OwnerView st={{ id: "c", t: 1.2, kind: "owner", label: "", shot: ownerShotAt(1.2), cam: HOOK_CAM(0.5) }} />}
-    {mask ? null : <AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(10,8,7,0.55) 0%, rgba(10,8,7,0.78) 30%, rgba(10,8,7,0.78) 66%, rgba(10,8,7,0.35) 100%)" }} />}
+    {mask ? null : <AbsoluteFill style={{ background: `linear-gradient(180deg, ${rgba(PAL.veil, 0.55)} 0%, ${rgba(PAL.veil, 0.78)} 30%, ${rgba(PAL.veil, 0.78)} 66%, ${rgba(PAL.veil, 0.35)} 100%)` }} />}
     <Cap c={COVER_TITLE} mask={mask} />
     <Img src={staticFile(CFG.card.logo)} style={{ position: "absolute", left: 90, top: 1240, width: 320, height: 320 * (CFG.card.logoPx[1] / CFG.card.logoPx[0]), filter: mask ? "brightness(0) invert(1)" : undefined }} />
   </AbsoluteFill>
