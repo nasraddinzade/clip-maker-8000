@@ -1,0 +1,9 @@
+# входы и выходы ролика в репозиторий не кладутся (README, «Что положить»)
+public/
+src/timeline.json
+voice/
+music/
+out/
+check/
+node_modules/
+.venv-whisper/
